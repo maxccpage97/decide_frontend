@@ -1,0 +1,5 @@
+export const SET_LOCATION = 'SET_LOCATION'
+export const SET_RADIUS = 'SET_RADIUS'
+export const SET_TIME_OPTION = 'SET_TIME_OPTION'
+export const SET_TIME_VALUE = 'SET_TIME_VALUE'
+export const UPDATE_SETTINGS = 'UPDATE_SETTINGS'

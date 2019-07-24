@@ -1,0 +1,5 @@
+export const ERROR = {
+  UNKNOWN: 'UNKNOWN',
+  PERMISSIONS: 'PERMISSIONS',
+  SERVER: 'SEVER',
+}
