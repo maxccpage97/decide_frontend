@@ -28,7 +28,7 @@ const PROD_URL = 'https://decide-server.herokuapp.com'
 function* getProfile(deviceId, deviceType) {
   try {
     const response = yield axios.get(`${PROD_URL}/users?deviceId=${deviceId}`)
-
+    console.log('inital response', response)
     if (_.isEmpty(response.data)) {
       const newUser = yield call(createProfile, deviceId, deviceType)
       return newUser
@@ -70,6 +70,8 @@ function* getInitialConfig(action) {
   const { deviceId, deviceType, latitude, longitude } = action.payload
   try {
     const userProfile = yield call(getProfile, deviceId, deviceType)
+    console.log(userProfile)
+    debugger
     const currentLocation = { latitude, longitude }
     const google_token = yield call(getApiKey, 'google')
     const yelp_token = yield call(getApiKey, 'yelp')
