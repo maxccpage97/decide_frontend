@@ -21,14 +21,14 @@ import {
 } from '../screens/Decision/constants'
 import { setDecision } from '../screens/Decision/actions'
 
-const LOCAL_URL = 'http://192.168.230.74:3001'
+const LOCAL_URL = 'http://localhost:3001'
 
 const PROD_URL = 'https://decide-server.herokuapp.com'
 
 function* getProfile(deviceId, deviceType) {
   try {
-    const response = yield axios.get(`${PROD_URL}/users?deviceId=${deviceId}`)
-    console.log('inital response', response)
+    const response = yield axios.get(`${LOCAL_URL}/users?deviceId=${deviceId}`)
+
     if (_.isEmpty(response.data)) {
       const newUser = yield call(createProfile, deviceId, deviceType)
       return newUser
@@ -47,7 +47,7 @@ function* createProfile(deviceId, deviceType) {
   }
 
   try {
-    const response = yield axios.post(`${PROD_URL}/users`, params, {
+    const response = yield axios.post(`${LOCAL_URL}/users`, params, {
       headers: headers,
     })
     return response.data
@@ -58,7 +58,7 @@ function* createProfile(deviceId, deviceType) {
 
 function* getApiKey(type) {
   try {
-    const response = yield axios.get(`${PROD_URL}/keys?type=${type}`)
+    const response = yield axios.get(`${LOCAL_URL}/keys?type=${type}`)
     return _.first(response.data).value
   } catch (e) {
     yield put(setServerError())
@@ -70,8 +70,6 @@ function* getInitialConfig(action) {
   const { deviceId, deviceType, latitude, longitude } = action.payload
   try {
     const userProfile = yield call(getProfile, deviceId, deviceType)
-    console.log(userProfile)
-    debugger
     const currentLocation = { latitude, longitude }
     const google_token = yield call(getApiKey, 'google')
     const yelp_token = yield call(getApiKey, 'yelp')
@@ -93,7 +91,7 @@ function* getInitialConfig(action) {
 function* getUserProfile(action) {
   const deviceId = action.payload
   try {
-    const response = yield axios.get(`${PROD_URL}/users?deviceId=${deviceId}`)
+    const response = yield axios.get(`${LOCAL_URL}/users?deviceId=${deviceId}`)
     yield put(setUserProfile(_.first(response.data)))
   } catch (e) {
     console.error(`There was an error getting user profile in settings ${e}`)
@@ -105,7 +103,7 @@ function* updateSettings(action) {
   const params = { _id, settings }
   try {
     if (_id && settings) {
-      const response = yield axios.put(`${PROD_URL}/users/settings`, {
+      const response = yield axios.put(`${LOCAL_URL}/users/settings`, {
         data: params,
       })
     }
@@ -131,7 +129,7 @@ function* getGroupOptions(action) {
 
   try {
     const generic = yield axios.get(
-      `${PROD_URL}/options/?open_now=${openNow}&open_at=${openAt}&categories=${categories}&key=${key}&latitude=${latitude}&longitude=${longitude}&radius=${radius}`
+      `${LOCAL_URL}/options/?open_now=${openNow}&open_at=${openAt}&categories=${categories}&key=${key}&latitude=${latitude}&longitude=${longitude}&radius=${radius}`
     )
     const {
       data: { businesses },
@@ -152,7 +150,7 @@ function* getRestaurants(params) {
   const categories = options.map(option => option.alias)
   try {
     const response = yield axios.get(
-      `${PROD_URL}/options/?open_now=${openNow}&open_at=${openAt}&categories=${categories}&key=${key}&latitude=${latitude}&longitude=${longitude}&radius=${radius}`
+      `${LOCAL_URL}/options/?open_now=${openNow}&open_at=${openAt}&categories=${categories}&key=${key}&latitude=${latitude}&longitude=${longitude}&radius=${radius}`
     )
     const {
       data: { businesses },
@@ -165,7 +163,9 @@ function* getRestaurants(params) {
 
 function* getReviewsOnBusiness(key, id) {
   try {
-    const response = yield axios.get(`${PROD_URL}/reviews/?id=${id}&key=${key}`)
+    const response = yield axios.get(
+      `${LOCAL_URL}/reviews/?id=${id}&key=${key}`
+    )
     const {
       data: { reviews, total },
     } = response
@@ -180,7 +180,7 @@ function* getReviewsOnBusiness(key, id) {
 function* getBussinessInformation(key, id) {
   try {
     const response = yield axios.get(
-      `${PROD_URL}/business/?id=${id}&key=${key}`
+      `${LOCAL_URL}/business/?id=${id}&key=${key}`
     )
     const { data } = response
 
@@ -241,7 +241,7 @@ function* addDecisionToUserProfile(action) {
   const { _id, decisions } = action.payload
   const params = { _id, decisions: decisions }
   try {
-    const response = yield axios.put(`${PROD_URL}/users/decisions`, {
+    const response = yield axios.put(`${LOCAL_URL}/users/decisions`, {
       data: params,
     })
   } catch (e) {
@@ -254,7 +254,7 @@ function* addImpressionToUserProfile(action) {
   const { _id, impressions } = action.payload
   const params = { _id, impressions }
   try {
-    const response = yield axios.put(`${PROD_URL}/users/impressions/`, {
+    const response = yield axios.put(`${LOCAL_URL}/users/impressions/`, {
       data: params,
     })
   } catch (e) {
