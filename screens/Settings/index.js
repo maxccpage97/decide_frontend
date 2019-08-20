@@ -9,7 +9,6 @@ import {
 } from 'react-native'
 import { deviceHeight, deviceWidth, color, getIcon } from '../../utils/styles'
 import Loading from '../../components/Loading'
-import MapBackground from '../../components/MapBackground'
 import { connect } from 'react-redux'
 import {
   setLocation,
