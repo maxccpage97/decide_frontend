@@ -205,6 +205,7 @@ class Decision extends Component {
     accept: false,
     decline: false,
     accepted: false,
+    timeHasPassed: false,
   }
 
   static navigationOptions = {
@@ -219,6 +220,12 @@ class Decision extends Component {
         this.props.clearDecision()
       }
     )
+
+    setTimeout(() => {
+      this.setState({
+        timeHasPassed: true,
+      })
+    }, 8000)
   }
 
   componentWillUnmount() {
@@ -316,7 +323,7 @@ class Decision extends Component {
 
   render() {
     const { isLoading, listing, isEmpty } = this.props
-
+    const { timeHasPassed } = this.state
     if (isEmpty) {
       return (
         <View style={{ width: '100%', height: '100%' }}>
@@ -347,8 +354,8 @@ class Decision extends Component {
         </View>
       )
     }
-    if (isLoading || !listing) {
-      return <Loading />
+    if (isLoading || !listing || !timeHasPassed) {
+      return <Loading isLoadingDecision />
     } else {
       const {
         listing: {

@@ -20,6 +20,7 @@ import time from '../assets/time.png'
 import clock from '../assets/clock.png'
 import price from '../assets/price.png'
 import address from '../assets/address.png'
+import locationFillWhite from '../assets/location-fill-white.png'
 import phone from '../assets/phone.png'
 import back from '../assets/back.png'
 import threeStar from '../assets/stars/3_stars.png'
@@ -47,6 +48,8 @@ export const getIcon = type => {
       return reset
     case 'search':
       return search
+    case 'location-fill-white':
+      return locationFillWhite
     case 'location-fill':
       return locationFill
     case 'location':

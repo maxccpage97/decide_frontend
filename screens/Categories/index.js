@@ -211,8 +211,7 @@ class Categories extends Component {
                         backgroundColor: this.props.selectedCategories
                           .map(x => x.label)
                           .includes(category.label)
-                          ? // ? '#eceefd'
-                            'rgb(241,120,135)'
+                          ? 'rgb(241,120,135)'
                           : '#796A6A',
                       },
                     }}
