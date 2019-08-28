@@ -28,6 +28,8 @@ import threeHalfStar from '../assets/stars/3.5_stars.png'
 import fourStar from '../assets/stars/4_stars.png'
 import fourHalfStar from '../assets/stars/4.5_stars.png'
 import fiveStar from '../assets/stars/5_stars.png'
+import addressCirlce from '../assets/address-circle.png'
+import oval from '../assets/Oval.png'
 
 //Colors
 export const color = {
@@ -84,6 +86,10 @@ export const getIcon = type => {
       return phone
     case 'address':
       return address
+    case 'address-circle':
+      return addressCirlce
+    case 'oval':
+      return oval
   }
 }
 

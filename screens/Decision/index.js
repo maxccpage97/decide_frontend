@@ -206,6 +206,7 @@ class Decision extends Component {
     decline: false,
     accepted: false,
     timeHasPassed: false,
+    blah: true,
   }
 
   static navigationOptions = {
@@ -354,7 +355,7 @@ class Decision extends Component {
         </View>
       )
     }
-    if (isLoading || !listing || !timeHasPassed) {
+    if (isLoading || !listing || !timeHasPassed || this.state.blah) {
       return <Loading isLoadingDecision />
     } else {
       const {

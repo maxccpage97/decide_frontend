@@ -7,7 +7,7 @@ import { ScaledSheet } from 'react-native-size-matters'
 class DotSpacers extends Component {
   styles = ScaledSheet.create({
     container: {
-      height: '45@vs',
+      height: '40@vs',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
@@ -15,11 +15,13 @@ class DotSpacers extends Component {
     dot: {
       zIndex: 10,
       alignSelf: 'center',
-      backgroundColor: '#c8c8c8',
-      height: '14@vs',
-      width: '14@s',
-      borderRadius: '10@vs',
-      opacity: 0.8,
+      borderColor: color.white,
+      borderStyle: 'solid',
+      borderWidth: 1,
+      height: '10@vs',
+      width: '10@s',
+      borderRadius: '4.5@vs',
+      opacity: 1,
     },
   })
 

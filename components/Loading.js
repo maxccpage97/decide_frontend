@@ -1,11 +1,20 @@
 import React, { Component } from 'react'
-import { SafeAreaView, Image, View, Text, Animated } from 'react-native'
+import {
+  SafeAreaView,
+  Image,
+  View,
+  Text,
+  Animated,
+  ImageBackground,
+} from 'react-native'
 import { ScaledSheet } from 'react-native-size-matters'
 import { BarIndicator } from 'react-native-indicators'
 import { connect } from 'react-redux'
 import _ from 'lodash'
 import { formatCustomTimeString } from '../utils/styles'
 import { deviceHeight, deviceWidth, getIcon, color } from '../utils/styles'
+import DotSpacers from '../components/DotSpacers'
+
 const style = ScaledSheet.create({
   container: {
     flex: 1,
@@ -21,18 +30,27 @@ const style = ScaledSheet.create({
     width: deviceWidth / 12,
   },
   itemContainer: {
+    width: deviceWidth / 1.1,
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'center',
     alignItems: 'center',
-    margin: '2.5@ms',
+    overflow: 'hidden',
+    marginLeft: '10@ms',
+    marginTop: '10@ms',
   },
   text: {
-    fontSize: '18@ms',
+    fontSize: '17@ms',
     lineHeight: '28@ms',
     color: color.white,
     textAlign: 'center',
     marginLeft: '10@ms',
+  },
+  radius: {
+    marginLeft: '2.5@ms',
+  },
+  address: {
+    marginTop: '2.5@ms',
+    marginRight: '1.5@ms',
   },
 })
 
@@ -69,7 +87,7 @@ class Loading extends Component {
         if (address) {
           const display = address.split(',')
           if (!_.isEmpty(display) && display.length >= 3) {
-            return `${display[0]}`
+            return `${display[0]}, ${display[1]}, ${display[2]}`
           }
         }
       }
@@ -80,7 +98,7 @@ class Loading extends Component {
       if (userProfile.settings && Array.isArray(userProfile.settings)) {
         if (userProfile.settings[0].location.address) {
           const display = userProfile.settings[0].location.address.split(',')
-          return `${display[0]}`
+          return `${display[0]}, ${display[1]}, ${display[2]}, ${display[3]}`
         }
       }
     }
@@ -92,7 +110,7 @@ class Loading extends Component {
     const { settings } = this.props
     if (settings) {
       if (settings.radius) {
-        return `${settings.radius / 1000}km`
+        return `Within ${settings.radius / 1000}km`
       }
     }
 
@@ -127,14 +145,36 @@ class Loading extends Component {
                 ...style.itemContainer,
               }}
             >
-              <View style={style.icon}>
-                <Image
-                  source={getIcon('location-fill-white')}
-                  style={{ flex: 1, width: undefined, height: undefined }}
-                  resizeMode="contain"
-                />
-              </View>
-              <Text style={style.text}> {this.getDisplayAddress()} </Text>
+              <ImageBackground
+                source={getIcon('oval')}
+                style={{
+                  width: deviceWidth / 6,
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+                resizeMode="contain"
+              >
+                <View style={{ ...style.icon, ...style.address }}>
+                  <Image
+                    source={getIcon('address-circle')}
+                    style={{
+                      flex: 1,
+                      width: undefined,
+                      height: undefined,
+                    }}
+                    resizeMode="contain"
+                  />
+                </View>
+              </ImageBackground>
+              <Text
+                ellipsizeMode="tail"
+                lineBreakMode="tail"
+                numberOfLines={1}
+                style={style.text}
+              >
+                {this.getDisplayAddress()}
+              </Text>
             </Animated.View>
             <Animated.View
               style={{
@@ -142,13 +182,24 @@ class Loading extends Component {
                 ...style.itemContainer,
               }}
             >
-              <View style={style.icon}>
-                <Image
-                  source={getIcon('range-white')}
-                  style={{ flex: 1, width: undefined, height: undefined }}
-                  resizeMode="contain"
-                />
-              </View>
+              <ImageBackground
+                source={getIcon('oval')}
+                style={{
+                  width: deviceWidth / 6,
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+                resizeMode="contain"
+              >
+                <View style={{ ...style.icon, ...style.radius }}>
+                  <Image
+                    source={getIcon('range-white')}
+                    style={{ flex: 1, width: undefined, height: undefined }}
+                    resizeMode="contain"
+                  />
+                </View>
+              </ImageBackground>
               <Text style={style.text}> {this.getDisplayRadius()} </Text>
             </Animated.View>
             <Animated.View
@@ -157,19 +208,31 @@ class Loading extends Component {
                 ...style.itemContainer,
               }}
             >
-              <View style={style.icon}>
-                <Image
-                  source={getIcon('clock')}
-                  style={{ flex: 1, width: undefined, height: undefined }}
-                  resizeMode="contain"
-                />
-              </View>
+              <ImageBackground
+                source={getIcon('oval')}
+                style={{
+                  width: deviceWidth / 6,
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+                resizeMode="contain"
+              >
+                <View style={style.icon}>
+                  <Image
+                    source={getIcon('clock')}
+                    style={{ flex: 1, width: undefined, height: undefined }}
+                    resizeMode="contain"
+                  />
+                </View>
+              </ImageBackground>
               <Text style={style.text}> {this.getDisplayTime()} </Text>
             </Animated.View>
           </View>
         </SafeAreaView>
       )
     }
+
     return (
       <SafeAreaView style={style.container}>
         <BarIndicator count={4} color="white" />
