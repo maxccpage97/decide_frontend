@@ -21,12 +21,19 @@ import Loading from '../../components/Loading'
 import Header from '../../components/Header'
 import _ from 'lodash'
 import { ScaledSheet } from 'react-native-size-matters'
-import { categories } from '../../utils/settings'
-import { setSelectedCategories } from './actions'
+import {
+  categories,
+  desserts,
+  nightlife,
+  experiences,
+} from '../../utils/settings'
+import { setSelectedCategories, clearCategories } from './actions'
 
 class Categories extends Component {
   constructor(props) {
     super(props)
+
+    props.clearCategories()
   }
 
   styles = ScaledSheet.create({
@@ -80,12 +87,25 @@ class Categories extends Component {
       paddingTop: '5@ms',
       paddingBottom: '10@ms',
     },
+    largeScrollContainer: {
+      width: '100%',
+      paddingLeft: '15@ms',
+      paddingRight: '15@ms',
+      paddingTop: '5@ms',
+      paddingBottom: '10@ms',
+    },
     groupText: {
       fontSize: '23@ms',
       fontWeight: '500',
       color: '#FFFFFF',
       position: 'absolute',
       textAlign: 'center',
+    },
+    largeGroupText: {
+      fontSize: '25@ms',
+      fontWeight: '500',
+      color: '#FFFFFF',
+      position: 'absolute',
     },
     categoryContainer: {
       shadowOffset: { width: 1, height: 1 },
@@ -97,6 +117,32 @@ class Categories extends Component {
       alignItems: 'center',
       width: deviceWidth / 2.185,
       height: deviceHeight / 4.75,
+    },
+    groupContainer: {
+      shadowOffset: { width: 1, height: 1 },
+      shadowColor: '#796A6A',
+      shadowOpacity: 0.5,
+      borderRadius: '10@ms',
+      margin: '5@ms',
+      backgroundColor: '#FFF',
+      justifyContent: 'center',
+      alignItems: 'center',
+      flex: 1,
+    },
+    largeGroupImage: {
+      height: deviceHeight / 3.25,
+      width: deviceWidth / 1.05,
+      borderRadius: '10@ms',
+      overflow: 'hidden',
+    },
+    largeGroupOverlay: {
+      position: 'absolute',
+      height: deviceHeight / 3.25,
+      width: deviceWidth / 1.05,
+      opacity: 0.7,
+      borderTopLeftRadius: '10@ms',
+      borderTopRightRadius: '10@ms',
+      backgroundColor: '#796A6A',
     },
     groupImage: {
       width: deviceWidth / 2.185,
@@ -135,22 +181,36 @@ class Categories extends Component {
       group: { label },
       options,
     } = this.props
-    const num = 3 - this.props.selectedCategories.length
-    return `Select (${num}) Categories`
+    const hasSelection = label === 'Restaurants' || label === 'Experiences'
+    if (hasSelection) {
+      const num = 3 - this.props.selectedCategories.length
+      return `Select (${num}) Categories`
+    } else {
+      return `Select 1 Category`
+    }
   }
 
   handleCategorySelection = category => {
-    const { selectedCategories } = this.props
-    let updatedState = [...selectedCategories]
-    if (_.includes(updatedState.map(x => x.label), category.label)) {
-      const index = updatedState.findIndex(x => x.label === category.label)
-      updatedState.splice(index, 1)
-    } else {
-      if (updatedState.length <= 2) {
-        updatedState.push(category)
+    const {
+      selectedCategories,
+      group: { label },
+    } = this.props
+    const hasSelection = label === 'Restaurants' || label === 'Experiences'
+    if (hasSelection) {
+      let updatedState = [...selectedCategories]
+      if (_.includes(updatedState.map(x => x.label), category.label)) {
+        const index = updatedState.findIndex(x => x.label === category.label)
+        updatedState.splice(index, 1)
+      } else {
+        if (updatedState.length <= 2) {
+          updatedState.push(category)
+        }
       }
+      this.props.setSelectedCategories(updatedState)
+    } else {
+      this.props.setSelectedCategories([category])
+      this.props.navigation.navigate('Decision')
     }
-    this.props.setSelectedCategories(updatedState)
   }
 
   getMargin = index => {
@@ -171,57 +231,111 @@ class Categories extends Component {
     return Left
   }
 
+  getItems = label => {
+    switch (label) {
+      case 'Restaurants':
+        return categories
+      case 'Desserts':
+        return desserts
+      case 'Nightlife':
+        return nightlife
+      case 'Experiences':
+        return experiences
+    }
+  }
+
+  getCategories = label => {
+    const items = this.getItems(label)
+    if (items.length > 6) {
+      return items.map((category, i) => (
+        <TouchableOpacity
+          key={i}
+          style={{
+            ...this.styles.categoryContainer,
+            ...this.getMargin(i),
+          }}
+          onPress={() => this.handleCategorySelection(category)}
+        >
+          <View style={this.styles.groupImage}>
+            <Image
+              source={{ uri: category.img }}
+              borderRadius={10}
+              style={{ flex: 1, width: undefined, height: undefined }}
+              resizeMode="cover"
+            />
+
+            <View
+              style={{
+                ...this.styles.groupOverlay,
+                ...{
+                  backgroundColor: this.props.selectedCategories
+                    .map(x => x.label)
+                    .includes(category.label)
+                    ? 'rgb(241,120,135)'
+                    : '#796A6A',
+                },
+              }}
+            />
+          </View>
+          <Text style={this.styles.groupText}>{category.label}</Text>
+        </TouchableOpacity>
+      ))
+    } else {
+      return items.map((category, i) => (
+        <TouchableOpacity
+          key={i}
+          style={this.styles.groupContainer}
+          onPress={() => this.handleCategorySelection(category)}
+        >
+          <View style={this.styles.largeGroupImage}>
+            <Image
+              source={{ uri: category.img }}
+              borderTopRightRadius={10}
+              borderTopLeftRadius={10}
+              style={{ flex: 1, width: undefined, height: undefined }}
+              resizeMode="cover"
+            />
+
+            <View style={this.styles.largeGroupOverlay} />
+          </View>
+          <Text style={this.styles.largeGroupText}>{category.label}</Text>
+        </TouchableOpacity>
+      ))
+    }
+  }
+
   render() {
+    const {
+      group: { label },
+    } = this.props
+    const isSmall = label === 'Restaurants' || label === 'Experiences'
     return (
       <View style={{ width: '100%', height: '100%' }}>
         <SafeAreaView style={this.styles.topSafeView} />
         <SafeAreaView style={this.styles.secondSafeView}>
           <Header title={this.getHeaderTitle()} canGoBack hasSettings />
-          <ScrollView
-            style={this.styles.scrollContainer}
-            contentContainerStyle={{
-              display: 'flex',
-              flexDirection: 'row',
-              flexWrap: 'wrap',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            {categories.map((category, i) => (
-              <TouchableOpacity
-                key={i}
-                style={{
-                  ...this.styles.categoryContainer,
-                  ...this.getMargin(i),
-                }}
-                onPress={() => this.handleCategorySelection(category)}
-              >
-                <View style={this.styles.groupImage}>
-                  <Image
-                    source={{ uri: category.img }}
-                    borderRadius={10}
-                    style={{ flex: 1, width: undefined, height: undefined }}
-                    resizeMode="cover"
-                  />
-
-                  <View
-                    style={{
-                      ...this.styles.groupOverlay,
-                      ...{
-                        backgroundColor: this.props.selectedCategories
-                          .map(x => x.label)
-                          .includes(category.label)
-                          ? 'rgb(241,120,135)'
-                          : '#796A6A',
-                      },
-                    }}
-                  />
-                </View>
-                <Text style={this.styles.groupText}>{category.label}</Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-          {this.props.selectedCategories.length === 3 && (
+          {isSmall ? (
+            <ScrollView
+              style={this.styles.scrollContainer}
+              contentContainerStyle={{
+                display: 'flex',
+                flexDirection: 'row',
+                flexWrap: 'wrap',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              {this.getCategories(label)}
+            </ScrollView>
+          ) : (
+            <ScrollView
+              style={this.styles.largeScrollContainer}
+              contentContainerStyle={{ display: 'flex', alignItems: 'center' }}
+            >
+              {this.getCategories(label)}
+            </ScrollView>
+          )}
+          {isSmall && this.props.selectedCategories.length === 3 && (
             <TouchableOpacity
               onPress={() => this.props.navigation.navigate('Decision')}
               style={this.styles.continueButton}
@@ -239,8 +353,6 @@ const mapStateToProps = state => {
   return {
     user: state.UserConfig.userProfile,
     group: state.Group.group,
-    options: state.Pick.options,
-    isLoading: state.Pick.isLoading,
     yelp_token: state.UserConfig.yelp_token,
     location: state.Settings.location,
     userProfile: state.UserConfig.userProfile,
@@ -251,5 +363,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { setSelectedCategories }
+  { setSelectedCategories, clearCategories }
 )(Categories)

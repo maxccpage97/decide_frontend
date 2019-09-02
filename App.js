@@ -4,7 +4,6 @@ import { createStackNavigator, createAppContainer } from 'react-navigation'
 import Home from './screens/Home'
 import Group from './screens/Group'
 import Settings from './screens/Settings'
-import Pick from './screens/Pick'
 import Categories from './screens/Categories'
 import Decision from './screens/Decision'
 import ErrorBoundary from 'react-native-error-boundary'
@@ -24,9 +23,6 @@ const StackNavigator = createStackNavigator(
     },
     Settings: {
       screen: Settings,
-    },
-    Pick: {
-      screen: Pick,
     },
     Categories: {
       screen: Categories,

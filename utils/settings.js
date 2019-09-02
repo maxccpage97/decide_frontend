@@ -15,33 +15,21 @@ export const groups = [
   },
   {
     label: 'Desserts',
-    alias: ['desserts', 'icecream', 'cakeshop', 'bakeries', 'creperies'],
+    alias: ['desserts'],
     img:
       'https://theinspiredhome.imgix.net/images/hero-high-resolution_160827_114517.jpg?fit=clip&q=80&w=750',
-    hasCategories: false,
+    hasCategories: true,
   },
   {
     label: 'Nightlife',
-    alias: ['bars', 'pubs', 'danceclubs', 'brewpubs'],
+    alias: ['nightlife'],
     img:
       'https://astanatimes.com/wp-content/uploads/2016/10/lonelyplanet.com_.jpg',
-    hasCategories: false,
+    hasCategories: true,
   },
   {
     label: 'Experiences',
-    alias: [
-      'archery',
-      'axethrowing',
-      'bowling',
-      'climbing',
-      'escapegames',
-      'paintball',
-      'poolhalls',
-      'mini_golf',
-      'lasertag',
-      'gokarts',
-      'virtualrealitycenters',
-    ],
+    alias: 'experiences',
     img:
       'https://cdn.shortpixel.ai/client/q_glossy,ret_img,w_1620/https://sparkparties.com/wp-content/uploads/2017/11/1179_88A8812.jpg',
     hasCategories: false,
@@ -156,5 +144,96 @@ export const categories = [
     alias: 'vegan',
     img:
       'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRFu9wUytWSygwdayH6TlABw-_e1WRuR-9Qri2o3l4cXnutFBDH',
+  },
+]
+
+export const desserts = [
+  {
+    label: 'Cold Desserts',
+    alias: ['icecream', 'gelato'],
+    img:
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSe7DrkjB57PrDpUm6jrCR5NEFX1TBWcslypBPTc8Lft-nU6Edv',
+  },
+  {
+    label: 'Other Desserts',
+    alias: ['cakeshop', 'bakeries', 'creperies'],
+    img:
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnB_FeejWRf3W8cmQYkABMwo9lG_WE2YDstyXvmiajzm_kL94P',
+  },
+]
+
+export const nightlife = [
+  {
+    label: 'Bars & Pubs',
+    alias: ['bars', 'pubs'],
+    img: '',
+  },
+  {
+    label: 'Nightclubs',
+    alias: 'danceclubs',
+    img: '',
+  },
+  {
+    label: 'Brew Pubs',
+    alias: 'brewpubs',
+    img: '',
+  },
+]
+
+export const experiences = [
+  {
+    label: 'Archery',
+    alias: 'archery',
+    img: '',
+  },
+  {
+    label: 'Axe Throwing',
+    alias: 'axethrowing',
+    img: '',
+  },
+  {
+    label: 'Bowling',
+    alias: 'bowling',
+    img: '',
+  },
+  {
+    label: 'Climing',
+    alias: 'climing',
+    img: '',
+  },
+  {
+    label: 'Escape Rooms',
+    alias: 'escapegames',
+    img: '',
+  },
+  {
+    label: 'Paintball',
+    alias: 'paintball',
+    img: '',
+  },
+  {
+    label: 'Pool Halls',
+    alias: 'poolhalls',
+    img: '',
+  },
+  {
+    label: 'Mini Golf',
+    alias: 'mini_golf',
+    img: '',
+  },
+  {
+    label: 'Laser Tag',
+    alias: 'lasertag',
+    img: '',
+  },
+  {
+    label: 'Go Karting',
+    alias: 'gokarts',
+    img: '',
+  },
+  {
+    label: 'Virtual Reality',
+    alias: 'virtualrealitycenters',
+    img: '',
   },
 ]

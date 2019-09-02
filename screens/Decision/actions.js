@@ -3,7 +3,7 @@ import {
   SET_DECISION,
   HANDLE_DECISION,
   CLEAR_DECISION,
-  HANDLE_DECLINE,
+  ADD_IMPRESSION,
 } from './constants'
 
 export const getDecision = params => {
@@ -27,9 +27,9 @@ export const handleDecision = listing => {
   }
 }
 
-export const handleDecline = listing => {
+export const addImpression = listing => {
   return {
-    type: HANDLE_DECLINE,
+    type: ADD_IMPRESSION,
     payload: listing,
   }
 }

@@ -30,6 +30,7 @@ import fourHalfStar from '../assets/stars/4.5_stars.png'
 import fiveStar from '../assets/stars/5_stars.png'
 import addressCirlce from '../assets/address-circle.png'
 import oval from '../assets/Oval.png'
+import group from '../assets/group.png'
 
 //Colors
 export const color = {
@@ -47,7 +48,7 @@ export const getIcon = type => {
     case 'error':
       return error
     case 'reset':
-      return reset
+      return group
     case 'search':
       return search
     case 'location-fill-white':

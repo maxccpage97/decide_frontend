@@ -122,7 +122,12 @@ class Group extends Component {
       label,
       alias,
     })
-    this.props.navigation.navigate(hasCategories ? 'Categories' : 'Pick')
+
+    if (label === 'Cafes') {
+      this.props.navigation.navigate('Decision')
+    } else {
+      this.props.navigation.navigate('Categories')
+    }
   }
 
   getOpenSettings = () => {

@@ -7,8 +7,6 @@ import {
   setInitialConfig,
   setUserProfile,
 } from '../wrappers/UserConfig/actions'
-import { GET_OPTIONS } from '../screens/Pick/constants'
-import { setOptions } from '../screens/Pick/actions'
 import { setServerError } from '../screens/Home/actions'
 import _ from 'lodash'
 import { UPDATE_SETTINGS } from '../screens/Settings/constants'
@@ -17,7 +15,7 @@ import { setLocation } from '../screens/Settings/actions'
 import {
   GET_DECISION,
   HANDLE_DECISION,
-  HANDLE_DECLINE,
+  ADD_IMPRESSION,
 } from '../screens/Decision/constants'
 import { setDecision } from '../screens/Decision/actions'
 
@@ -112,48 +110,17 @@ function* updateSettings(action) {
   }
 }
 
-function* getGroupOptions(action) {
-  const {
-    group: { alias },
-    key,
-    coords: { latitude, longitude },
-    radius,
-    time,
-  } = action.payload
-
-  const openNow = time.timeOption === 0
-  const openAt = time.timeValue ? time.timeValue * 1000 : null
-
-  const categories = `${alias.join(',')}`
-
-  try {
-    const generic = yield axios.get(
-      `${PROD_URL}/options/?open_now=${openNow}&open_at=${openAt}&categories=${categories}&key=${key}&latitude=${latitude}&longitude=${longitude}&radius=${radius}`
-    )
-    const {
-      data: { businesses },
-    } = generic
-
-    const mostPopular = businesses.filter(business => business.rating > 3.5)
-
-    yield put(setOptions(mostPopular))
-  } catch (e) {
-    yield put(setServerError())
-    console.error(`${e} There was an error getting group options`)
-  }
-}
-
-function* getRestaurants(params) {
+function* getBussinesses(params) {
   const { key, longitude, latitude, radius, openAt, openNow, options } = params
-
-  const categories = options.map(option => option.alias)
+  console.log(options)
   try {
     const response = yield axios.get(
-      `${PROD_URL}/options/?open_now=${openNow}&open_at=${openAt}&categories=${categories}&key=${key}&latitude=${latitude}&longitude=${longitude}&radius=${radius}`
+      `${PROD_URL}/options/?open_now=${openNow}&open_at=${openAt}&categories=${options}&key=${key}&latitude=${latitude}&longitude=${longitude}&radius=${radius}`
     )
     const {
       data: { businesses },
     } = response
+
     return _.sample(businesses)
   } catch (e) {
     console.error(`${e} There was an error getting restaurnts`)
@@ -201,36 +168,24 @@ function* getDecison(action) {
   const openNow = time.timeOption === 0
   const openAt = time.timeValue ? time.timeValue * 1000 : null
 
-  if (!hasCategories) {
-    const short = _.sample(options)
-    if (short !== undefined) {
-      const { id } = short
-      const long = yield call(getBussinessInformation, key, id)
-      const listing = { ...short, ...long }
-      const { reviews, reviewCount } = yield call(getReviewsOnBusiness, key, id)
-      yield put(setDecision({ listing, reviews, reviewCount }))
-    } else {
-      yield put(setDecision({ listing: [], reviews: [], reviewCount: 0 }))
-    }
+  const business = yield call(getBussinesses, {
+    key,
+    longitude,
+    latitude,
+    radius,
+    openAt,
+    openNow,
+    options,
+  })
+
+  if (business !== undefined) {
+    const { id } = business
+    const details = yield call(getBussinessInformation, key, id)
+    const listing = { ...business, ...details }
+    const { reviews, reviewCount } = yield call(getReviewsOnBusiness, key, id)
+    yield put(setDecision({ listing, reviews, reviewCount }))
   } else {
-    const short = yield call(getRestaurants, {
-      key,
-      longitude,
-      latitude,
-      radius,
-      openAt,
-      openNow,
-      options,
-    })
-    if (short !== undefined) {
-      const { id } = short
-      const long = yield call(getBussinessInformation, key, id)
-      const listing = { ...short, ...long }
-      const { reviews, reviewCount } = yield call(getReviewsOnBusiness, key, id)
-      yield put(setDecision({ listing, reviews, reviewCount }))
-    } else {
-      yield put(setDecision({ listing: [], reviews: [], reviewCount: 0 }))
-    }
+    yield put(setDecision({ listing: [], reviews: [], reviewCount: 0 }))
   }
 }
 
@@ -254,6 +209,7 @@ function* addImpressionToUserProfile(action) {
     const response = yield axios.put(`${PROD_URL}/users/impressions/`, {
       data: params,
     })
+    console.log(response, 'i saved')
   } catch (e) {
     yield put(setServerError())
     console.error(`${e} There was an error updating user profile impressions`)
@@ -264,9 +220,8 @@ function* rootSaga() {
   yield takeLatest(GET_INITIAL_CONFIG, getInitialConfig)
   yield takeLatest(GET_USER_PROFILE, getUserProfile)
   yield takeLatest(UPDATE_SETTINGS, updateSettings)
-  yield takeLatest(GET_OPTIONS, getGroupOptions)
   yield takeLatest(GET_DECISION, getDecison)
   yield takeLatest(HANDLE_DECISION, addDecisionToUserProfile)
-  yield takeLatest(HANDLE_DECLINE, addImpressionToUserProfile)
+  yield takeLatest(ADD_IMPRESSION, addImpressionToUserProfile)
 }
 export default rootSaga

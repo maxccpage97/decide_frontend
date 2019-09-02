@@ -92,8 +92,7 @@ export default class AcceptModal extends Component {
         </View>
         <View style={styles.modalContent}>
           <Text style={styles.contentText}>
-            You did it. Well, we kind of did it for you but you clicked the
-            button. Have an awesome time at {this.props.name}!
+            Have an awesome time at {this.props.name}!
           </Text>
         </View>
         <View style={styles.footer}>
@@ -101,7 +100,7 @@ export default class AcceptModal extends Component {
             style={styles.continue}
             onPress={this.props.openInMaps}
           >
-            <Text style={styles.continueText}> Get Directions </Text>
+            <Text style={styles.continueText}> Open in Maps </Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.cancel}

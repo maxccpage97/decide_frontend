@@ -30,20 +30,21 @@ const style = ScaledSheet.create({
     width: deviceWidth / 12,
   },
   itemContainer: {
-    width: deviceWidth / 1.1,
+    width: deviceWidth / 1.2,
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    overflow: 'hidden',
     marginLeft: '10@ms',
     marginTop: '10@ms',
+    paddingRight: '10@ms',
   },
   text: {
     fontSize: '17@ms',
     lineHeight: '28@ms',
     color: color.white,
-    textAlign: 'center',
+    textAlign: 'left',
     marginLeft: '10@ms',
+    marginRight: '10@ms',
   },
   radius: {
     marginLeft: '2.5@ms',
@@ -167,12 +168,7 @@ class Loading extends Component {
                   />
                 </View>
               </ImageBackground>
-              <Text
-                ellipsizeMode="tail"
-                lineBreakMode="tail"
-                numberOfLines={1}
-                style={style.text}
-              >
+              <Text numberOfLines={2} style={style.text}>
                 {this.getDisplayAddress()}
               </Text>
             </Animated.View>

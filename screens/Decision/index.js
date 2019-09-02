@@ -26,7 +26,7 @@ import {
   getDecision,
   handleDecision,
   clearDecision,
-  handleDecline,
+  addImpression,
 } from './actions'
 import yelpLogo from '../../assets/Yelp_trademark_RGB_outline.png'
 import { Footer } from './CardFooter'
@@ -40,10 +40,13 @@ const getData = props => {
   const {
     group: { label },
     selectedCategories,
-    selectedOptions,
     yelp_token,
   } = props
-  const hasCategories = label === 'Restaurants'
+  const hasCategories =
+    label === 'Restaurants' ||
+    label === 'Entertainment' ||
+    label === 'Nightlife' ||
+    label === 'Desserts'
 
   const coords =
     props.location && props.location.coords
@@ -54,14 +57,15 @@ const getData = props => {
 
   props.getDecision({
     key: yelp_token,
-    group: props.group,
     coords,
     radius: props.radius,
     time: {
       timeOption: props.timeOption,
       timeValue: props.timeValue,
     },
-    options: hasCategories ? selectedCategories : selectedOptions,
+    options: hasCategories
+      ? selectedCategories.map(cat => cat.alias)
+      : props.group.alias,
     hasCategories,
   })
 }
@@ -205,8 +209,6 @@ class Decision extends Component {
     accept: false,
     decline: false,
     accepted: false,
-    timeHasPassed: false,
-    blah: true,
   }
 
   static navigationOptions = {
@@ -221,12 +223,6 @@ class Decision extends Component {
         this.props.clearDecision()
       }
     )
-
-    setTimeout(() => {
-      this.setState({
-        timeHasPassed: true,
-      })
-    }, 8000)
   }
 
   componentWillUnmount() {
@@ -304,7 +300,7 @@ class Decision extends Component {
     }))
   }
 
-  handleDecline = () => {
+  handleReset = () => {
     const {
       listing,
       userProfile: { _id, impressions },
@@ -312,19 +308,15 @@ class Decision extends Component {
     } = this.props
     const businessId = listing.id
     const item = { businessId, date }
+    this.props.addImpression({ _id, impressions: [...impressions, item] })
     this.setState({
       decline: false,
     })
-    this.props.handleDecline({
-      _id,
-      impressions: [...impressions, item],
-    })
-    this.props.navigation.navigate('Group')
+    getData(this.props)
   }
 
   render() {
     const { isLoading, listing, isEmpty } = this.props
-    const { timeHasPassed } = this.state
     if (isEmpty) {
       return (
         <View style={{ width: '100%', height: '100%' }}>
@@ -355,8 +347,8 @@ class Decision extends Component {
         </View>
       )
     }
-    if (isLoading || !listing || !timeHasPassed || this.state.blah) {
-      return <Loading isLoadingDecision />
+    if (isLoading || !listing) {
+      return <Loading />
     } else {
       const {
         listing: {
@@ -374,14 +366,10 @@ class Decision extends Component {
         <View style={{ width: '100%', height: '100%' }}>
           <SafeAreaView style={this.styles.topSafeView} />
           <SafeAreaView style={this.styles.secondSafeView}>
-            <Header
-              logo
-              accepted={this.props.accepted}
-              canGoBack={this.props.isEmpty}
-            />
+            <Header logo accepted canGoBack={!this.props.accepted} />
             <View style={this.styles.container}>
               <DeclineModal
-                handleDecline={this.handleDecline}
+                handleReset={this.handleReset}
                 name={listing.name}
                 isVisible={this.state.decline}
                 toggleModal={this.toggleDeclineModal}
@@ -486,7 +474,6 @@ const mapStateToProps = state => {
     reviews: state.Decision.reviews,
     reviewCount: state.Decision.reviewCount,
     group: state.Group.group,
-    selectedOptions: state.Pick.selectedOptions,
     selectedCategories: state.Categories.selectedCategories,
     isLoading: state.Decision.isLoading,
     yelp_token: state.UserConfig.yelp_token,
@@ -504,5 +491,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { getDecision, handleDecision, clearDecision, handleDecline }
+  { getDecision, handleDecision, clearDecision, addImpression }
 )(Decision)

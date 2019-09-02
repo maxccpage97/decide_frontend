@@ -88,20 +88,19 @@ export default class DeclineModal extends Component {
     return (
       <Modal style={styles.modal} isVisible={this.props.isVisible}>
         <View style={styles.header}>
-          <Text style={styles.title}> Decline Decision </Text>
+          <Text style={styles.title}> Declined </Text>
         </View>
         <View style={styles.modalContent}>
           <Text style={styles.contentText}>
-            Not a fan of {this.props.name}? No worries. But you will have to
-            start from the beginning...
+            Not a fan of {this.props.name}? No hard feelings!
           </Text>
         </View>
         <View style={styles.footer}>
           <TouchableOpacity
             style={styles.continue}
-            onPress={this.props.handleDecline}
+            onPress={this.props.handleReset}
           >
-            <Text style={styles.continueText}> Continue </Text>
+            <Text style={styles.continueText}> Try Again </Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.cancel}
