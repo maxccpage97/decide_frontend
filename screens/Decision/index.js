@@ -44,7 +44,7 @@ const getData = props => {
   } = props
   const hasCategories =
     label === 'Restaurants' ||
-    label === 'Entertainment' ||
+    label === 'Experiences' ||
     label === 'Nightlife' ||
     label === 'Desserts'
 
@@ -347,7 +347,7 @@ class Decision extends Component {
         </View>
       )
     }
-    if (isLoading || !listing) {
+    if (isLoading || !listing || _.isEmpty(listing)) {
       return <Loading />
     } else {
       const {

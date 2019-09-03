@@ -48,6 +48,8 @@ export const getIcon = type => {
     case 'error':
       return error
     case 'reset':
+      return reset
+    case 'group':
       return group
     case 'search':
       return search

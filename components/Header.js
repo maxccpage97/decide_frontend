@@ -128,7 +128,7 @@ class Header extends Component {
             }}
           >
             <Image
-              source={getIcon('reset')}
+              source={getIcon('group')}
               style={{
                 flex: 1,
                 width: undefined,

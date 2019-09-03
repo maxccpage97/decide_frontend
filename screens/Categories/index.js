@@ -184,7 +184,9 @@ class Categories extends Component {
     const hasSelection = label === 'Restaurants' || label === 'Experiences'
     if (hasSelection) {
       const num = 3 - this.props.selectedCategories.length
-      return `Select (${num}) Categories`
+      return `Select (${num}) ${
+        label === 'Restaurants' ? 'Categories' : 'Experiences'
+      }`
     } else {
       return `Select 1 Category`
     }

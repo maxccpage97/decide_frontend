@@ -112,7 +112,6 @@ function* updateSettings(action) {
 
 function* getBussinesses(params) {
   const { key, longitude, latitude, radius, openAt, openNow, options } = params
-  console.log(options)
   try {
     const response = yield axios.get(
       `${PROD_URL}/options/?open_now=${openNow}&open_at=${openAt}&categories=${options}&key=${key}&latitude=${latitude}&longitude=${longitude}&radius=${radius}`
@@ -209,7 +208,6 @@ function* addImpressionToUserProfile(action) {
     const response = yield axios.put(`${PROD_URL}/users/impressions/`, {
       data: params,
     })
-    console.log(response, 'i saved')
   } catch (e) {
     yield put(setServerError())
     console.error(`${e} There was an error updating user profile impressions`)
