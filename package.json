@@ -10,7 +10,7 @@
     "@mapbox/react-native-mapbox-gl": "https://github.com/nitaliano/react-native-mapbox-gl/tarball/master",
     "axios": "^0.19.0",
     "geolib": "^3.0.4",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.13",
     "moment": "^2.24.0",
     "react": "16.8.3",
     "react-native": "0.59.5",
